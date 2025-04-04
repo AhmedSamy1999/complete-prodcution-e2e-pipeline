@@ -7,7 +7,7 @@ pipeline{
         maven 'Maven3'
     }
 
-    
+
     
     environment {
 
@@ -75,17 +75,17 @@ pipeline{
 
         stage("Docker Build & Push") {
             steps {
-                script {
-                    // Docker Build
-                    docker.withRegistry('',DOCKER_PASS) {
-                    docker_image = docker.build "${IMAGE_NAME}"
-                    }
-                    // Docker Push
-                    docker.withRegistry('',DOCKER_PASS) {
-                    docker_image.push("$IMAGE_TAG")
-                    docker_image.push('latest')
-                    }
-                }
+                    script {
+            // Docker Build with network=host
+            sh "docker build --network=host -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+
+            // Login to DockerHub and push
+            docker.withRegistry('', DOCKER_PASS) {
+                def docker_image = docker.image("${IMAGE_NAME}:${IMAGE_TAG}")
+                docker_image.push()
+                docker_image.push("latest")
+            }
+            }
             }        
         }
 
