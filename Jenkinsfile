@@ -2,10 +2,15 @@ pipeline{
     agent {
         label "jenkins-agent"
     }
+
+    
     tools {
         jdk 'Java17'
         maven 'Maven3'
     }
+
+
+
     stages {
         stage("Cleanup Workspace") {
             steps {
@@ -48,6 +53,18 @@ pipeline{
                 }
             }        
         }
+
+
+      stage("Quality Gate") {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+                }
+            }        
+        }
+
+
+
 
     }
 }
