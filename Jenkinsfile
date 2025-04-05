@@ -111,21 +111,15 @@ pipeline{
        // }
 
 
-                stage("Trigger CD Pipeline") {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'JENKINS_API_TOKEN', variable: 'TOKEN')]) {
-                        sh '''
-                            curl -v -k --user admin:${TOKEN} -X POST \
-                            -H 'cache-control: no-cache' \
-                            -H 'content-type: application/x-www-form-urlencoded' \
-                            --data "IMAGE_TAG=${IMAGE_TAG}" \
-                            "http://jenkins.zyhosttest.online:8080/job/gitops-complete-pipeline/buildWithParameters?token=gitops-token"
-                        '''
-                    }
-                }
-            }
+       stage("Trigger CD Pipeline") {
+    steps {
+        script {
+            build job: 'gitops-complete-pipeline', 
+                  parameters: [string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}")],
+                  wait: false
         }
+    }
+}
 
 
 
