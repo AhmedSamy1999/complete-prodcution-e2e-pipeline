@@ -1,1 +1,1 @@
-# Sample application for e2e DevOps Pipeline
+# e2e ci cd pipeline
